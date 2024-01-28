@@ -9,7 +9,9 @@ public class Game {
 	ArrayList<Player> players;
 	HashMap<String, String> board;
 	int rows = 6;
-	String columns = "abcdefg";
+	String columns = "ABCDEFG";
+	boolean keepPlaying = true;
+	Player playerOnTurn;
 
 	public Game() {
 		br = new BufferedReader(new InputStreamReader(System.in));
@@ -22,6 +24,8 @@ public class Game {
 		players.add(new Player(pInput(), "X"));
 		System.out.println("Give the name of player 2: ");
 		players.add(new Player(pInput(), "O"));
+		
+		playerOnTurn = players.get(0);
 	}
 	
 	private void boardCreation(int rows, String columns) {
@@ -32,7 +36,7 @@ public class Game {
 			counter = 0;
 			
 			//row loop
-			while(counter < rows) {
+			while(counter <= rows) {
 				counter ++;
 				
 				//hashmap key creation
@@ -43,8 +47,19 @@ public class Game {
 	}
 	
 	public void run(){
-		printBoard(rows, columns);
+		String input;
+		
+		printBoard();
+		System.out.println("abcdefg");
+		System.out.println();
 		printPlayerStats();
+		System.out.println();
+		
+		while(keepPlaying) {
+			input = pInput();
+			handleInput(input);
+		}
+		
 	}
 	
 	private String pInput() {
@@ -60,7 +75,48 @@ public class Game {
 		return pInput;
 	}
 	
-	private void printBoard(int rows, String columns) {
+	private void handleInput(String pInput) {
+		String[] input = pInput.split(" ");
+		
+		switch(input[0]) {
+		case "put":
+			if(!input[1].isEmpty()) {
+				placeSign(input[1]);
+			}else {
+				System.out.println("Please give a column");
+			}
+			break;
+			
+		case "help":
+			printHelp();
+			break;
+			
+		case "board":
+			printBoard();
+			break;
+			
+		case "exit":
+			keepPlaying = false;
+		
+		default:
+			System.out.println(pInput + " is not a valid command");
+		}
+	}
+	
+	private void placeSign(String column) {
+		String sign = playerOnTurn.getSign();
+		int counter = 0;
+		
+		if(columns.contains(column)){
+			
+			
+			
+		}else {
+			System.out.println(column + " is not a valid column");
+		}
+	}
+	
+	private void printBoard() {
 		int counter = 0;
 		
 		//columns get printed
@@ -68,7 +124,7 @@ public class Game {
 			counter = 0;
 			
 			//row gets printed
-			while(counter < rows) {
+			while(counter <= rows) {
 				counter++;
 				String key = c + Integer.toString(counter);
 				
@@ -86,6 +142,15 @@ public class Game {
 			System.out.println("Wins: " + p.getWins());
 			System.out.println();
 		}
+	}
+	
+	private void printHelp() {
+		System.out.println("Connect four");
+		System.out.println("----------------");
+		System.out.println("Try to connect four of your own signs");
+		System.out.println("Type 'place' + 'column letter'");
+		System.out.println("Example: place a");
+		System.out.println("----------------");
 	}
 	
 	
